@@ -1,5 +1,5 @@
 import { USER } from "../models/user.js";
-
+import { userService } from "../services/userService.js";
 function isValidEmail(email) {
   return email && email.endsWith('@gmail.com');
 }
@@ -44,6 +44,16 @@ const createUserValid = (req, res, next) => {
   const { sendBadRequest } = res.responseMiddleware;
   const { firstName, lastName, email, phoneNumber, password } = req.body;
 
+  
+  const existingEmail = userService.search({email});
+  if (existingEmail) {
+    return sendBadRequest('Email is already taken.');
+  }
+  const existingNumber = userService.search({phoneNumber});
+  if (existingNumber) {
+    return sendBadRequest('PhoneNumber is already taken.');
+  }
+
   for (const key in USER) {
     if (USER.hasOwnProperty(key) && key !== "id" && !req.body[key]) {
       return res.status(400).json({ error: true, message: `Field ${key} is required.` });
@@ -54,13 +64,21 @@ const createUserValid = (req, res, next) => {
   if (validationError) {
     return validationError;
   }
-
   next();
 };
 
 const updateUserValid = (req, res, next) => {
   const { sendBadRequest } = res.responseMiddleware;
   const { firstName, lastName, email, phoneNumber, password } = req.body;
+
+    const existingEmail = userService.search({email});
+    if (existingEmail && existingEmail.id !== req.params.id) {
+      return sendBadRequest('Email is already taken.');
+    }
+    const existingNumber = userService.search({phoneNumber});
+    if (existingNumber && existingNumber.id !== req.params.id) {
+      return sendBadRequest('PhoneNumber is already taken.');
+    }
 
   const field = firstName || lastName || email || phoneNumber || password;
 
