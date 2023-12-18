@@ -2,7 +2,7 @@ import { Router } from "express";
 import { fightersService } from "../services/fightService.js";
 import {
   createUserValid,
- /*  updateUserValid, */
+   updateUserValid, 
 } from "../middlewares/user.validation.middleware.js";
 import { responseMiddleware } from "../middlewares/response.middleware.js";
 
