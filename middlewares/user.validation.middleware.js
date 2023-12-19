@@ -1,5 +1,6 @@
 import { USER } from "../models/user.js";
 import { userService } from "../services/userService.js";
+
 function isValidEmail(email) {
   return email && email.endsWith('@gmail.com');
 }
@@ -55,8 +56,8 @@ const createUserValid = (req, res, next) => {
   }
 
   for (const key in USER) {
-    if (USER.hasOwnProperty(key) && key !== "id" && !req.body[key]) {
-      return res.status(400).json({ error: true, message: `Field ${key} is required.` });
+    if (key !== "id" && !req.body[key]) {
+      return sendBadRequest(`Field ${key} is required.`)
     }
   }
 

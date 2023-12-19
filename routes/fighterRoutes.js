@@ -40,11 +40,11 @@ router.get("/", (req, res) => {
   }
 }); 
 
-router.post("/", /* createFighterValid, */ (req, res) => {
+router.post("/", createFighterValid, (req, res) => {
   const { sendSuccess, sendNotFound, sendBadRequest } = res.responseMiddleware;
 
   try {
-    const { name, power, defense, health } = req.body;
+    const { name, power, defense, health = 100 } = req.body;
     const newFighter = fighterService.createFighter({ name, power, defense, health });
     if (newFighter) {
       sendSuccess(newFighter);
